@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 170" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <title>Коворкинг: схема зала</title>
+  <rect x="6" y="6" width="228" height="158" rx="3"/>
+  <rect x="26" y="28" width="64" height="20" rx="3" fill="#1d4ed8" fill-opacity=".12"/>
+  <rect x="26" y="96" width="64" height="20" rx="3" fill="#1d4ed8" fill-opacity=".12"/>
+  <circle cx="128" cy="62" r="15" fill="#1d4ed8" fill-opacity=".12"/>
+  <circle cx="128" cy="128" r="11" fill="#1d4ed8" fill-opacity=".12"/>
+  <path d="M166 6V44M166 60V74H234"/>
+  <rect x="182" y="27" width="38" height="16" rx="3" fill="#1d4ed8" fill-opacity=".12"/>
+  <rect x="176" y="132" width="46" height="18" rx="7" fill="#1d4ed8" fill-opacity=".12"/>
+  <circle cx="199" cy="112" r="7" fill="#1d4ed8" fill-opacity=".12"/>
+  <circle cx="24" cy="148" r="7"/>
+  <g fill="#1d4ed8" stroke="none">
+    <circle cx="38" cy="20" r="3.6"/>
+    <circle cx="38" cy="56" r="3.6"/>
+    <circle cx="38" cy="88" r="3.6"/>
+    <circle cx="38" cy="124" r="3.6"/>
+    <circle cx="58" cy="20" r="3.6"/>
+    <circle cx="58" cy="56" r="3.6"/>
+    <circle cx="58" cy="88" r="3.6"/>
+    <circle cx="58" cy="124" r="3.6"/>
+    <circle cx="78" cy="20" r="3.6"/>
+    <circle cx="78" cy="56" r="3.6"/>
+    <circle cx="78" cy="88" r="3.6"/>
+    <circle cx="78" cy="124" r="3.6"/>
+    <circle cx="128.0" cy="38.0" r="3.6"/>
+    <circle cx="150.8" cy="54.6" r="3.6"/>
+    <circle cx="142.1" cy="81.4" r="3.6"/>
+    <circle cx="113.9" cy="81.4" r="3.6"/>
+    <circle cx="105.2" cy="54.6" r="3.6"/>
+    <circle cx="142.1" cy="142.1" r="3.6"/>
+    <circle cx="113.9" cy="142.1" r="3.6"/>
+    <circle cx="113.9" cy="113.9" r="3.6"/>
+    <circle cx="142.1" cy="113.9" r="3.6"/>
+    <circle cx="191" cy="19" r="3.6"/>
+    <circle cx="191" cy="51" r="3.6"/>
+    <circle cx="201" cy="19" r="3.6"/>
+    <circle cx="201" cy="51" r="3.6"/>
+    <circle cx="211" cy="19" r="3.6"/>
+    <circle cx="211" cy="51" r="3.6"/>
+  </g>
+</svg>
