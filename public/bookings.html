@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мои заявки — Конференции.РФ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="/bookings.html">Конференции.РФ</a>
+      <nav class="nav">
+        <a href="/bookings.html">Мои заявки</a>
+        <a href="/booking-new.html">Новая заявка</a>
+        <a href="/logout">Выйти</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <p class="message" id="message" hidden></p>
+    <h1>Мои заявки</h1>
+    <p><a class="btn" href="/booking-new.html">Новая заявка</a></p>
+
+    <!-- Сюда скрипт добавляет карточки заявок -->
+    <div class="cards" id="list"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
+  </footer>
+
+  <script src="/script.js"></script>
+  <script>
+    const list = document.getElementById('list');
+
+    // Загружает заявки с сервера и рисует карточки
+    async function loadBookings() {
+      const bookings = await api('GET', '/api/bookings');
+
+      if (bookings.length === 0) {
+        list.innerHTML = '<p class="empty">У вас пока нет заявок.</p>';
+      } else {
+        list.innerHTML = bookings.map(makeCard).join('');
+      }
+    }
+
+    // Возвращает HTML одной карточки заявки
+    function makeCard(booking) {
+      return `
+        <article class="card">
+          <div class="card-head">
+            <img src="/img/${booking.room_image}" alt="">
+            <h2>${booking.room_name}</h2>
+          </div>
+          <p><span class="badge" data-status="${booking.status}">${booking.status}</span></p>
+          <p>📅 ${booking.start_at}</p>
+          <p>💳 ${booking.payment}</p>
+          <div class="card-review">${makeReview(booking)}</div>
+        </article>`;
+    }
+
+    // Нижняя часть карточки: готовый отзыв, форма отзыва или подсказка
+    function makeReview(booking) {
+      // Отзыв уже оставлен
+      if (booking.review_rating) {
+        return `
+          <p><b>Ваш отзыв:</b> <span class="stars">${'★'.repeat(booking.review_rating)}</span></p>
+          <p>${safe(booking.review_text)}</p>`;
+      }
+
+      // Отзыв доступен только после завершения мероприятия
+      if (booking.status !== 'Завершено') {
+        return '<small>Отзыв можно оставить после завершения мероприятия.</small>';
+      }
+
+      return `
+        <details>
+          <summary>Оставить отзыв</summary>
+          <form novalidate onsubmit="sendReview(event, ${booking.id})">
+            <div class="field">
+              <label for="rating${booking.id}">Оценка</label>
+              <select id="rating${booking.id}" name="rating">
+                <option value="">Выберите оценку</option>
+                <option value="5">5 — отлично</option>
+                <option value="4">4 — хорошо</option>
+                <option value="3">3 — нормально</option>
+                <option value="2">2 — плохо</option>
+                <option value="1">1 — очень плохо</option>
+              </select>
+              <p class="error"></p>
+            </div>
+            <div class="field">
+              <label for="text${booking.id}">Отзыв</label>
+              <textarea id="text${booking.id}" name="text" rows="3"></textarea>
+              <p class="error"></p>
+            </div>
+            <button class="btn" type="submit">Отправить отзыв</button>
+          </form>
+        </details>`;
+    }
+
+    // Отправляет отзыв на сервер
+    async function sendReview(event, bookingId) {
+      event.preventDefault();
+      const form = event.target;
+
+      const data = Object.fromEntries(new FormData(form));
+      const result = await api('POST', '/api/bookings/' + bookingId + '/review', data);
+
+      if (result.ok) {
+        showMessage('Спасибо за отзыв!');
+        loadBookings(); // обновляем список, чтобы отзыв появился в карточке
+      } else {
+        showErrors(form, result.errors);
+      }
+    }
+
+    loadBookings();
+  </script>
+</body>
+</html>

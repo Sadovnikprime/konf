@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход — Конференции.РФ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="/">Конференции.РФ</a>
+      <nav class="nav">
+        <a href="/login.html">Вход</a>
+        <a href="/register.html">Регистрация</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <p class="message" id="message" hidden></p>
+    <h1>Вход</h1>
+
+    <form class="form" id="form" novalidate>
+      <p class="form-error" id="form-error" hidden></p>
+
+      <div class="field">
+        <label for="login">Логин</label>
+        <input id="login" name="login" type="text">
+        <p class="error"></p>
+      </div>
+
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input id="password" name="password" type="password">
+        <p class="error"></p>
+      </div>
+
+      <button class="btn" type="submit">Войти</button>
+      <p class="switch">Еще не зарегистрированы? <a href="/register.html">Регистрация</a></p>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
+  </footer>
+
+  <script src="/script.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const formError = document.getElementById('form-error');
+
+    // После регистрации сюда приходят по адресу /login.html?registered
+    if (location.search === '?registered') {
+      showMessage('Вы зарегистрированы. Теперь войдите в систему');
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form));
+      const result = await api('POST', '/api/login', data);
+
+      if (result.role === 'admin') {
+        location.href = '/admin.html';
+      } else if (result.role === 'user') {
+        location.href = '/bookings.html';
+      } else {
+        showErrors(form, result.errors);
+        // Общая ошибка формы: «Неверный логин или пароль»
+        formError.textContent = result.errors.common || '';
+        formError.hidden = !result.errors.common;
+      }
+    });
+  </script>
+</body>
+</html>

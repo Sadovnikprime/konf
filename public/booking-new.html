@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Новая заявка — Конференции.РФ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="/bookings.html">Конференции.РФ</a>
+      <nav class="nav">
+        <a href="/bookings.html">Мои заявки</a>
+        <a href="/booking-new.html">Новая заявка</a>
+        <a href="/logout">Выйти</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Новая заявка</h1>
+
+    <div class="columns">
+      <form class="form" id="form" novalidate>
+        <div class="field">
+          <label for="roomId">Помещение</label>
+          <!-- Список помещений загружается с сервера -->
+          <select id="roomId" name="roomId">
+            <option value="">Выберите помещение</option>
+          </select>
+          <p class="error"></p>
+        </div>
+
+        <div class="field">
+          <label for="startAt">Дата и время начала</label>
+          <input id="startAt" name="startAt" type="datetime-local">
+          <p class="error"></p>
+        </div>
+
+        <div class="field">
+          <label for="payment">Способ оплаты</label>
+          <select id="payment" name="payment">
+            <option value="">Выберите способ оплаты</option>
+            <option>При очном посещении</option>
+            <option>Переводом по СБП</option>
+          </select>
+          <p class="error"></p>
+        </div>
+
+        <button class="btn" type="submit">Отправить</button>
+      </form>
+
+      <!-- Картинка и описание выбранного помещения -->
+      <div class="preview" id="preview" hidden>
+        <img id="room-image" alt="Схема зала">
+        <p id="room-text"></p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
+  </footer>
+
+  <script src="/script.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const roomSelect = document.getElementById('roomId');
+    const preview = document.getElementById('preview');
+    let rooms = [];
+
+    // Загружает помещения и добавляет их в выпадающий список
+    async function loadRooms() {
+      rooms = await api('GET', '/api/rooms');
+      rooms.forEach((room) => {
+        roomSelect.innerHTML += `<option value="${room.id}">${room.name}</option>`;
+      });
+    }
+
+    // При выборе помещения показывает его картинку и описание
+    roomSelect.addEventListener('change', () => {
+      const room = rooms.find((item) => item.id === Number(roomSelect.value));
+
+      preview.hidden = !room;
+      if (room) {
+        document.getElementById('room-image').src = '/img/' + room.image;
+        document.getElementById('room-text').textContent = room.description + ' До ' + room.capacity + ' мест.';
+      }
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form));
+      const result = await api('POST', '/api/bookings', data);
+
+      if (result.ok) {
+        location.href = '/bookings.html'; // заявка создана — переходим к списку заявок
+      } else {
+        showErrors(form, result.errors);
+      }
+    });
+
+    loadRooms();
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Регистрация — Конференции.РФ</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a class="logo" href="/">Конференции.РФ</a>
+      <nav class="nav">
+        <a href="/login.html">Вход</a>
+        <a href="/register.html">Регистрация</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Регистрация</h1>
+
+    <form class="form" id="form" novalidate>
+      <div class="field">
+        <label for="login">Логин</label>
+        <input id="login" name="login" type="text">
+        <small>Латинские буквы и цифры, не меньше 6 символов</small>
+        <p class="error"></p>
+      </div>
+
+      <div class="field">
+        <label for="password">Пароль</label>
+        <input id="password" name="password" type="password">
+        <small>Не меньше 8 символов</small>
+        <p class="error"></p>
+      </div>
+
+      <div class="field">
+        <label for="fullName">ФИО</label>
+        <input id="fullName" name="fullName" type="text">
+        <small>Русскими буквами</small>
+        <p class="error"></p>
+      </div>
+
+      <div class="field">
+        <label for="phone">Телефон</label>
+        <input id="phone" name="phone" type="tel" placeholder="8(999)123-45-67">
+        <small>Формат: 8(XXX)XXX-XX-XX</small>
+        <p class="error"></p>
+      </div>
+
+      <div class="field">
+        <label for="email">Электронная почта</label>
+        <input id="email" name="email" type="email" placeholder="name@example.ru">
+        <p class="error"></p>
+      </div>
+
+      <button class="btn" type="submit">Зарегистрироваться</button>
+      <p class="switch">Уже зарегистрированы? <a href="/login.html">Вход</a></p>
+    </form>
+  </main>
+
+  <footer class="footer">
+    <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
+  </footer>
+
+  <script src="/script.js"></script>
+  <script>
+    const form = document.getElementById('form');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // отправляем данные сами, без перезагрузки страницы
+
+      // Собираем значения всех полей формы в один объект
+      const data = Object.fromEntries(new FormData(form));
+      const result = await api('POST', '/api/register', data);
+
+      if (result.ok) {
+        location.href = '/login.html?registered'; // пользователь создан — переходим на вход
+      } else {
+        showErrors(form, result.errors); // сервер нашёл ошибки — показываем их под полями
+      }
+    });
+  </script>
+</body>
+</html>
