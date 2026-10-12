@@ -4,44 +4,46 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Вход — Конференции.РФ</title>
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header class="header">
-    <div class="container">
-      <a class="logo" href="/">Конференции.РФ</a>
+<body class="bg-light">
+  <header class="bg-primary">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-2">
+      <a class="navbar-brand text-white fw-bold fs-4" href="/"><i class="bi bi-easel"></i> Конференции.РФ</a>
       <nav class="nav">
-        <a href="/login.html">Вход</a>
-        <a href="/register.html">Регистрация</a>
+        <a class="nav-link text-white" href="/login.html">Вход</a>
+        <a class="nav-link text-white" href="/register.html">Регистрация</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <p class="message" id="message" hidden></p>
-    <h1>Вход</h1>
+  <main class="container py-4">
+    <div class="alert alert-success form-box" id="message" hidden></div>
+    <h1 class="h3 mb-3">Вход</h1>
 
-    <form class="form" id="form" novalidate>
-      <p class="form-error" id="form-error" hidden></p>
+    <form class="card card-body shadow-sm form-box" id="form" novalidate>
+      <div class="alert alert-danger" id="form-error" hidden></div>
 
-      <div class="field">
-        <label for="login">Логин</label>
-        <input id="login" name="login" type="text">
-        <p class="error"></p>
+      <div class="mb-3">
+        <label class="form-label" for="login">Логин</label>
+        <input class="form-control" id="login" name="login" type="text">
+        <div class="invalid-feedback"></div>
       </div>
 
-      <div class="field">
-        <label for="password">Пароль</label>
-        <input id="password" name="password" type="password">
-        <p class="error"></p>
+      <div class="mb-3">
+        <label class="form-label" for="password">Пароль</label>
+        <input class="form-control" id="password" name="password" type="password">
+        <div class="invalid-feedback"></div>
       </div>
 
-      <button class="btn" type="submit">Войти</button>
-      <p class="switch">Еще не зарегистрированы? <a href="/register.html">Регистрация</a></p>
+      <button class="btn btn-primary" type="submit"><i class="bi bi-box-arrow-in-right"></i> Войти</button>
+      <p class="mt-3 mb-0">Еще не зарегистрированы? <a href="/register.html">Регистрация</a></p>
     </form>
   </main>
 
-  <footer class="footer">
+  <footer class="border-top py-3 text-secondary small">
     <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
   </footer>
 

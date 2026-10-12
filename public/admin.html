@@ -4,44 +4,49 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Панель администратора — Конференции.РФ</title>
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header class="header">
-    <div class="container">
-      <a class="logo" href="/admin.html">Конференции.РФ</a>
+<body class="bg-light">
+  <header class="bg-primary">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-2">
+      <a class="navbar-brand text-white fw-bold fs-4" href="/admin.html"><i class="bi bi-easel"></i> Конференции.РФ</a>
       <nav class="nav">
-        <a href="/admin.html">Заявки</a>
-        <a href="/logout">Выйти</a>
+        <a class="nav-link text-white" href="/admin.html">Заявки</a>
+        <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <p class="message" id="message" hidden></p>
-    <h1>Панель администратора</h1>
+  <main class="container py-4">
+    <div class="alert alert-success" id="message" hidden></div>
+    <h1 class="h3 mb-3">Панель администратора</h1>
 
     <!-- Фильтр: при выборе значения список заявок загружается заново -->
-    <div class="filter">
-      <select id="status" aria-label="Статус" onchange="loadBookings()">
-        <option value="">Все статусы</option>
-        <option>Новая</option>
-        <option>Мероприятие назначено</option>
-        <option>Завершено</option>
-      </select>
-
-      <select id="room" aria-label="Помещение" onchange="loadBookings()">
-        <option value="">Все помещения</option>
-      </select>
+    <div class="row g-2 mb-3">
+      <div class="col-md-4">
+        <select class="form-select" id="status" aria-label="Статус" onchange="loadBookings()">
+          <option value="">Все статусы</option>
+          <option>Новая</option>
+          <option>Мероприятие назначено</option>
+          <option>Завершено</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" id="room" aria-label="Помещение" onchange="loadBookings()">
+          <option value="">Все помещения</option>
+        </select>
+      </div>
     </div>
 
-    <p id="count"></p>
+    <p class="text-secondary" id="count"></p>
 
     <!-- Сюда скрипт добавляет карточки заявок -->
-    <div class="cards" id="list"></div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="list"></div>
   </main>
 
-  <footer class="footer">
+  <footer class="border-top py-3 text-secondary small">
     <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
   </footer>
 
@@ -70,29 +75,33 @@
     // Возвращает HTML одной карточки заявки
     function makeCard(booking) {
       return `
-        <article class="card">
-          <div class="card-head">
-            <img src="/img/${booking.room_image}" alt="">
-            <h2>№ ${booking.id}. ${booking.room_name}</h2>
+        <div class="col">
+          <div class="card h-100 card-hover">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <img class="room-image border rounded" src="/img/${booking.room_image}" alt="">
+                <h2 class="h5 mb-0">№ ${booking.id}. ${booking.room_name}</h2>
+              </div>
+              <span class="badge rounded-pill ${statusColor(booking.status)}">${booking.status}</span>
+              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${booking.start_at}</p>
+              <p class="mb-1"><i class="bi bi-credit-card text-primary"></i> ${booking.payment}</p>
+              <p class="mb-1"><i class="bi bi-person text-primary"></i> ${safe(booking.user_name)}</p>
+              <p class="mb-1"><i class="bi bi-telephone text-primary"></i> ${safe(booking.user_phone)}</p>
+              <p class="mb-0"><i class="bi bi-envelope text-primary"></i> ${safe(booking.user_email)}</p>
+              ${makeReview(booking)}
+            </div>
+            ${makeButtons(booking)}
           </div>
-          <p><span class="badge" data-status="${booking.status}">${booking.status}</span></p>
-          <p>📅 ${booking.start_at}</p>
-          <p>💳 ${booking.payment}</p>
-          <p>👤 ${safe(booking.user_name)}</p>
-          <p>📞 ${safe(booking.user_phone)}</p>
-          <p>✉️ ${safe(booking.user_email)}</p>
-          ${makeReview(booking)}
-          ${makeButtons(booking)}
-        </article>`;
+        </div>`;
     }
 
     // Отзыв пользователя, если он есть
     function makeReview(booking) {
       if (!booking.review_rating) return '';
       return `
-        <div class="card-review">
-          <p><b>Отзыв:</b> <span class="stars">${'★'.repeat(booking.review_rating)}</span></p>
-          <p>${safe(booking.review_text)}</p>
+        <div class="bg-light rounded p-2 mt-2">
+          <p class="mb-1"><b>Отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(booking.review_rating)}</span></p>
+          <p class="mb-0">${safe(booking.review_text)}</p>
         </div>`;
     }
 
@@ -102,10 +111,10 @@
 
       let buttons = '';
       if (booking.status === 'Новая') {
-        buttons += `<button class="btn" onclick="setStatus(${booking.id}, 'Мероприятие назначено')">Назначить мероприятие</button>`;
+        buttons += `<button class="btn btn-primary" onclick="setStatus(${booking.id}, 'Мероприятие назначено')">Назначить мероприятие</button>`;
       }
-      buttons += `<button class="btn btn-green" onclick="setStatus(${booking.id}, 'Завершено')">Завершить</button>`;
-      return `<div class="card-buttons">${buttons}</div>`;
+      buttons += `<button class="btn btn-success" onclick="setStatus(${booking.id}, 'Завершено')">Завершить</button>`;
+      return `<div class="card-footer bg-white d-flex flex-wrap gap-2">${buttons}</div>`;
     }
 
     // Меняет статус заявки и обновляет список

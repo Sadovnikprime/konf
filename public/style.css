@@ -1,336 +1,44 @@
-/* Конференции.РФ — стили.
-   Сначала описан вид для телефона (390 px), в конце файла — дополнения для широких экранов. */
+/* Конференции.РФ — дополнительные стили.
+   Основное оформление (сетка, кнопки, поля, карточки) берётся из библиотеки Bootstrap,
+   здесь только то, чего в ней нет: размеры элементов и анимации. */
 
-/* ---------- Общие стили ---------- */
-
-* {
-  box-sizing: border-box;
+/* Формы входа, регистрации и заявки не растягиваются на всю ширину экрана */
+.form-box {
+  max-width: 460px;
 }
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #1f2937;
-  background: #f3f4f6;
-}
-
-/* Колонка с содержимым по центру страницы */
-.container {
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-main {
-  min-height: 75vh;
-  padding-top: 24px;
-  padding-bottom: 40px;
-  animation: appear 0.4s; /* страница плавно появляется */
-}
-
-h1 {
-  margin: 0 0 16px;
-  font-size: 26px;
-}
-
-h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-p {
-  margin: 8px 0;
-}
-
-a {
-  color: #1d4ed8;
-}
-
-small {
-  color: #6b7280;
-}
-
-/* ---------- Шапка и подвал ---------- */
-
-.header {
-  background: #1d4ed8;
-}
-
-.header .container {
-  display: flex;
-  flex-wrap: wrap; /* на телефоне меню переносится под название */
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px 16px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-}
-
-.logo {
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-}
-
-.nav a {
-  padding: 6px 0;
-  color: #ffffff;
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s;
-}
-
-.nav a:hover {
-  border-color: #ffffff;
-}
-
-.footer {
-  padding: 16px 0;
-  color: #6b7280;
-  font-size: 14px;
-  border-top: 1px solid #d1d5db;
-}
-
-/* ---------- Сообщения ---------- */
-
-.message {
-  padding: 12px 16px;
-  background: #dbeafe;
-  border-left: 4px solid #1d4ed8;
-  border-radius: 6px;
-  animation: appear 0.4s;
-}
-
-.form-error {
-  padding: 12px 16px;
-  color: #b91c1c;
-  background: #fee2e2;
-  border-left: 4px solid #b91c1c;
-  border-radius: 6px;
-  animation: shake 0.3s;
-}
-
-.empty {
-  color: #6b7280;
-}
-
-/* ---------- Кнопки ---------- */
-
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  font: inherit;
-  font-weight: bold;
-  color: #ffffff;
-  text-decoration: none;
-  background: #1d4ed8;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.btn:hover {
-  background: #1e40af;
-}
-
-.btn:active {
-  transform: scale(0.96); /* кнопка слегка «нажимается» */
-}
-
-.btn-green {
-  background: #15803d;
-}
-
-.btn-green:hover {
-  background: #166534;
-}
-
-/* ---------- Формы ---------- */
-
-.form {
-  max-width: 440px;
-  padding: 20px;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-}
-
-.field {
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: bold;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 10px 12px;
-  font: inherit;
-  background: #ffffff;
-  border: 1px solid #9ca3af;
-  border-radius: 6px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  outline: none;
-  border-color: #1d4ed8;
-  box-shadow: 0 0 0 3px #bfdbfe;
-}
-
-/* Текст ошибки под полем. Пока ошибки нет, пустой абзац скрыт */
-.error {
-  margin: 4px 0 0;
-  color: #b91c1c;
-  font-size: 14px;
-}
-
-.error:empty {
-  display: none;
-}
-
-/* Поле с ошибкой: красная рамка и «встряхивание» */
-.invalid input,
-.invalid select,
-.invalid textarea {
-  border-color: #b91c1c;
-  background: #fef2f2;
-  animation: shake 0.3s;
-}
-
-.switch {
-  margin-bottom: 0;
-}
-
-/* ---------- Карточки заявок ---------- */
-
-.cards {
-  display: grid;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.card {
-  padding: 16px;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  transition: box-shadow 0.2s, transform 0.2s;
-}
-
-.card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px); /* карточка приподнимается при наведении */
-}
-
-.card-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.card-head img {
+/* Картинка помещения в карточке заявки */
+.room-image {
   width: 72px;
-}
-
-.card-review {
-  margin-top: 12px;
-  padding-top: 8px;
-  border-top: 1px dashed #d1d5db;
-}
-
-.card-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-summary {
-  color: #1d4ed8;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-details form {
-  margin-top: 12px;
-}
-
-.stars {
-  color: #d97706;
-}
-
-/* Метка статуса. Цвет зависит от атрибута data-status */
-.badge {
-  display: inline-block;
-  padding: 2px 10px;
-  font-size: 14px;
-  font-weight: bold;
-  color: #1e40af;
-  background: #dbeafe;
-  border-radius: 12px;
-}
-
-.badge[data-status='Мероприятие назначено'] {
-  color: #92400e;
-  background: #fef3c7;
-}
-
-.badge[data-status='Завершено'] {
-  color: #166534;
-  background: #dcfce7;
-}
-
-/* ---------- Новая заявка: картинка выбранного зала ---------- */
-
-.columns {
-  display: grid;
-  gap: 20px;
-}
-
-.preview {
-  max-width: 440px;
-  padding: 16px;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  animation: appear 0.4s;
-}
-
-.preview img {
-  display: block;
-  width: 100%;
-}
-
-/* ---------- Фильтр в панели администратора ---------- */
-
-.filter {
-  display: grid;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 16px;
+  flex: none;
 }
 
 /* ---------- Анимации ---------- */
+
+/* Страница плавно появляется */
+main {
+  animation: appear 0.4s;
+}
+
+/* Карточка приподнимается при наведении */
+.card-hover {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+}
+
+/* Кнопка слегка «нажимается» */
+.btn:active {
+  transform: scale(0.96);
+}
+
+/* Поле с ошибкой «встряхивается» */
+.is-invalid {
+  animation: shake 0.3s;
+}
 
 @keyframes appear {
   from {
@@ -345,26 +53,5 @@ details form {
   }
   75% {
     transform: translateX(5px);
-  }
-}
-
-/* ---------- Широкие экраны: планшет и компьютер ---------- */
-
-@media (min-width: 700px) {
-  /* карточки в несколько колонок */
-  .cards {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-
-  /* форма и картинка зала рядом */
-  .columns {
-    grid-template-columns: 440px 1fr;
-    align-items: start;
-  }
-
-  /* два списка фильтра в одну строку */
-  .filter {
-    grid-template-columns: 240px 240px;
-    gap: 12px;
   }
 }

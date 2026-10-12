@@ -4,30 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Мои заявки — Конференции.РФ</title>
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header class="header">
-    <div class="container">
-      <a class="logo" href="/bookings.html">Конференции.РФ</a>
+<body class="bg-light">
+  <header class="bg-primary">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-2">
+      <a class="navbar-brand text-white fw-bold fs-4" href="/bookings.html"><i class="bi bi-easel"></i> Конференции.РФ</a>
       <nav class="nav">
-        <a href="/bookings.html">Мои заявки</a>
-        <a href="/booking-new.html">Новая заявка</a>
-        <a href="/logout">Выйти</a>
+        <a class="nav-link text-white" href="/bookings.html">Мои заявки</a>
+        <a class="nav-link text-white" href="/booking-new.html">Новая заявка</a>
+        <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <p class="message" id="message" hidden></p>
-    <h1>Мои заявки</h1>
-    <p><a class="btn" href="/booking-new.html">Новая заявка</a></p>
+  <main class="container py-4">
+    <div class="alert alert-success" id="message" hidden></div>
+    <h1 class="h3 mb-3">Мои заявки</h1>
+    <a class="btn btn-primary mb-3" href="/booking-new.html"><i class="bi bi-plus-lg"></i> Новая заявка</a>
 
     <!-- Сюда скрипт добавляет карточки заявок -->
-    <div class="cards" id="list"></div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="list"></div>
   </main>
 
-  <footer class="footer">
+  <footer class="border-top py-3 text-secondary small">
     <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
   </footer>
 
@@ -40,7 +42,7 @@
       const bookings = await api('GET', '/api/bookings');
 
       if (bookings.length === 0) {
-        list.innerHTML = '<p class="empty">У вас пока нет заявок.</p>';
+        list.innerHTML = '<p class="text-secondary">У вас пока нет заявок.</p>';
       } else {
         list.innerHTML = bookings.map(makeCard).join('');
       }
@@ -49,16 +51,20 @@
     // Возвращает HTML одной карточки заявки
     function makeCard(booking) {
       return `
-        <article class="card">
-          <div class="card-head">
-            <img src="/img/${booking.room_image}" alt="">
-            <h2>${booking.room_name}</h2>
+        <div class="col">
+          <div class="card h-100 card-hover">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <img class="room-image border rounded" src="/img/${booking.room_image}" alt="">
+                <h2 class="h5 mb-0">${booking.room_name}</h2>
+              </div>
+              <span class="badge rounded-pill ${statusColor(booking.status)}">${booking.status}</span>
+              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${booking.start_at}</p>
+              <p class="mb-0"><i class="bi bi-credit-card text-primary"></i> ${booking.payment}</p>
+            </div>
+            <div class="card-footer bg-white">${makeReview(booking)}</div>
           </div>
-          <p><span class="badge" data-status="${booking.status}">${booking.status}</span></p>
-          <p>📅 ${booking.start_at}</p>
-          <p>💳 ${booking.payment}</p>
-          <div class="card-review">${makeReview(booking)}</div>
-        </article>`;
+        </div>`;
     }
 
     // Нижняя часть карточки: готовый отзыв, форма отзыва или подсказка
@@ -66,22 +72,22 @@
       // Отзыв уже оставлен
       if (booking.review_rating) {
         return `
-          <p><b>Ваш отзыв:</b> <span class="stars">${'★'.repeat(booking.review_rating)}</span></p>
-          <p>${safe(booking.review_text)}</p>`;
+          <p class="mb-1"><b>Ваш отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(booking.review_rating)}</span></p>
+          <p class="mb-0">${safe(booking.review_text)}</p>`;
       }
 
       // Отзыв доступен только после завершения мероприятия
       if (booking.status !== 'Завершено') {
-        return '<small>Отзыв можно оставить после завершения мероприятия.</small>';
+        return '<small class="text-secondary">Отзыв можно оставить после завершения мероприятия.</small>';
       }
 
       return `
         <details>
-          <summary>Оставить отзыв</summary>
-          <form novalidate onsubmit="sendReview(event, ${booking.id})">
-            <div class="field">
-              <label for="rating${booking.id}">Оценка</label>
-              <select id="rating${booking.id}" name="rating">
+          <summary class="text-primary fw-semibold">Оставить отзыв</summary>
+          <form class="mt-2" novalidate onsubmit="sendReview(event, ${booking.id})">
+            <div class="mb-2">
+              <label class="form-label" for="rating${booking.id}">Оценка</label>
+              <select class="form-select" id="rating${booking.id}" name="rating">
                 <option value="">Выберите оценку</option>
                 <option value="5">5 — отлично</option>
                 <option value="4">4 — хорошо</option>
@@ -89,14 +95,14 @@
                 <option value="2">2 — плохо</option>
                 <option value="1">1 — очень плохо</option>
               </select>
-              <p class="error"></p>
+              <div class="invalid-feedback"></div>
             </div>
-            <div class="field">
-              <label for="text${booking.id}">Отзыв</label>
-              <textarea id="text${booking.id}" name="text" rows="3"></textarea>
-              <p class="error"></p>
+            <div class="mb-2">
+              <label class="form-label" for="text${booking.id}">Отзыв</label>
+              <textarea class="form-control" id="text${booking.id}" name="text" rows="3"></textarea>
+              <div class="invalid-feedback"></div>
             </div>
-            <button class="btn" type="submit">Отправить отзыв</button>
+            <button class="btn btn-primary" type="submit">Отправить отзыв</button>
           </form>
         </details>`;
     }

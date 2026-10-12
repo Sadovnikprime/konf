@@ -4,62 +4,70 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Новая заявка — Конференции.РФ</title>
+  <link rel="stylesheet" href="/lib/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <header class="header">
-    <div class="container">
-      <a class="logo" href="/bookings.html">Конференции.РФ</a>
+<body class="bg-light">
+  <header class="bg-primary">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-2">
+      <a class="navbar-brand text-white fw-bold fs-4" href="/bookings.html"><i class="bi bi-easel"></i> Конференции.РФ</a>
       <nav class="nav">
-        <a href="/bookings.html">Мои заявки</a>
-        <a href="/booking-new.html">Новая заявка</a>
-        <a href="/logout">Выйти</a>
+        <a class="nav-link text-white" href="/bookings.html">Мои заявки</a>
+        <a class="nav-link text-white" href="/booking-new.html">Новая заявка</a>
+        <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <h1>Новая заявка</h1>
+  <main class="container py-4">
+    <h1 class="h3 mb-3">Новая заявка</h1>
 
-    <div class="columns">
-      <form class="form" id="form" novalidate>
-        <div class="field">
-          <label for="roomId">Помещение</label>
-          <!-- Список помещений загружается с сервера -->
-          <select id="roomId" name="roomId">
-            <option value="">Выберите помещение</option>
-          </select>
-          <p class="error"></p>
-        </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <form class="card card-body shadow-sm form-box" id="form" novalidate>
+          <div class="mb-3">
+            <label class="form-label" for="roomId">Помещение</label>
+            <!-- Список помещений загружается с сервера -->
+            <select class="form-select" id="roomId" name="roomId">
+              <option value="">Выберите помещение</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
 
-        <div class="field">
-          <label for="startAt">Дата и время начала</label>
-          <input id="startAt" name="startAt" type="datetime-local">
-          <p class="error"></p>
-        </div>
+          <div class="mb-3">
+            <label class="form-label" for="startAt">Дата и время начала</label>
+            <input class="form-control" id="startAt" name="startAt" type="datetime-local">
+            <div class="invalid-feedback"></div>
+          </div>
 
-        <div class="field">
-          <label for="payment">Способ оплаты</label>
-          <select id="payment" name="payment">
-            <option value="">Выберите способ оплаты</option>
-            <option>При очном посещении</option>
-            <option>Переводом по СБП</option>
-          </select>
-          <p class="error"></p>
-        </div>
+          <div class="mb-3">
+            <label class="form-label" for="payment">Способ оплаты</label>
+            <select class="form-select" id="payment" name="payment">
+              <option value="">Выберите способ оплаты</option>
+              <option>При очном посещении</option>
+              <option>Переводом по СБП</option>
+            </select>
+            <div class="invalid-feedback"></div>
+          </div>
 
-        <button class="btn" type="submit">Отправить</button>
-      </form>
+          <button class="btn btn-primary" type="submit"><i class="bi bi-send"></i> Отправить</button>
+        </form>
+      </div>
 
       <!-- Картинка и описание выбранного помещения -->
-      <div class="preview" id="preview" hidden>
-        <img id="room-image" alt="Схема зала">
-        <p id="room-text"></p>
+      <div class="col-md-6">
+        <div class="card shadow-sm" id="preview" hidden>
+          <img class="card-img-top p-3" id="room-image" alt="Схема зала">
+          <div class="card-body pt-0">
+            <p class="mb-0" id="room-text"></p>
+          </div>
+        </div>
       </div>
     </div>
   </main>
 
-  <footer class="footer">
+  <footer class="border-top py-3 text-secondary small">
     <div class="container">Конференции.РФ — бронирование помещений для конференций</div>
   </footer>
 

@@ -23,24 +23,19 @@ async function api(method, url, data) {
 }
 
 // Показывает ошибки под полями формы.
-// errors — объект от сервера: { login: 'текст ошибки', phone: 'текст ошибки' }
+// errors — объект от сервера: { login: 'текст ошибки', phone: 'текст ошибки' }.
+// Класс is-invalid из Bootstrap делает рамку поля красной и показывает блок invalid-feedback
 function showErrors(form, errors) {
-  form.querySelectorAll('.field').forEach((field) => {
-    const name = field.querySelector('input, select, textarea').name;
-    const text = errors[name] || '';
-
-    field.querySelector('.error').textContent = text;
-    field.classList.toggle('invalid', text !== '');
+  form.querySelectorAll('input, select, textarea').forEach((input) => {
+    const text = errors[input.name] || '';
+    input.classList.toggle('is-invalid', text !== '');
+    input.parentElement.querySelector('.invalid-feedback').textContent = text;
   });
 }
 
 // Когда пользователь начинает исправлять поле, ошибка под ним убирается
 document.addEventListener('input', (event) => {
-  const field = event.target.closest('.field');
-  if (field) {
-    field.querySelector('.error').textContent = '';
-    field.classList.remove('invalid');
-  }
+  event.target.classList.remove('is-invalid');
 });
 
 // Показывает сообщение вверху страницы: «Статус изменён» и т. п.
@@ -48,6 +43,13 @@ function showMessage(text) {
   const message = document.getElementById('message');
   message.textContent = text;
   message.hidden = false;
+}
+
+// Цвет метки статуса (классы Bootstrap)
+function statusColor(status) {
+  if (status === 'Мероприятие назначено') return 'text-bg-warning';
+  if (status === 'Завершено') return 'text-bg-success';
+  return 'text-bg-primary';
 }
 
 // Заменяет в тексте символы < > & и кавычки, чтобы текст, введённый пользователем,
