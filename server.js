@@ -21,12 +21,14 @@ app.get('/', (req, res) => res.redirect('/login.html'));
 // Код 401 означает «нужно войти». Страница, получив его, отправляет на вход
 
 function onlyUser(req, res, next) {
-  if (req.session.user && req.session.user.role === 'user') return next();
+  const user = req.session.user;
+  if (user && user.role === 'user') return next();
   res.status(401).json({ error: 'Нужно войти в систему' });
 }
 
 function onlyAdmin(req, res, next) {
-  if (req.session.user && req.session.user.role === 'admin') return next();
+  const user = req.session.user;
+  if (user && user.role === 'admin') return next();
   res.status(401).json({ error: 'Нужно войти как администратор' });
 }
 
