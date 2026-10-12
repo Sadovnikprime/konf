@@ -1,57 +1,31 @@
 /* Конференции.РФ — дополнительные стили.
-   Основное оформление (сетка, кнопки, поля, карточки) берётся из библиотеки Bootstrap,
-   здесь только то, чего в ней нет: размеры элементов и анимации. */
+   Основное оформление берётся из Bootstrap, здесь только ширина форм и анимации. */
 
-/* Формы входа, регистрации и заявки не растягиваются на всю ширину экрана */
+/* Формы не растягиваются на всю ширину экрана */
 .form-box {
   max-width: 460px;
 }
 
-/* Картинка помещения в карточке заявки */
-.room-image {
-  width: 72px;
-  flex: none;
-}
-
-/* ---------- Анимации ---------- */
-
-/* Страница плавно появляется */
+/* Анимация: страница плавно появляется */
 main {
   animation: appear 0.4s;
-}
-
-/* Карточка приподнимается при наведении */
-.card-hover {
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
-}
-
-/* Кнопка слегка «нажимается» */
-.btn:active {
-  transform: scale(0.96);
-}
-
-/* Поле с ошибкой «встряхивается» */
-.is-invalid {
-  animation: shake 0.3s;
 }
 
 @keyframes appear {
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
 }
 
-@keyframes shake {
-  25% {
-    transform: translateX(-5px);
-  }
-  75% {
-    transform: translateX(5px);
-  }
+/* Микроанимации: карточка приподнимается при наведении, кнопка «нажимается» */
+.card-hover {
+  transition: transform 0.2s;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+}
+
+.btn:active {
+  transform: scale(0.95);
 }
