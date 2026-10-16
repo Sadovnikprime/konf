@@ -23,7 +23,6 @@
     <div class="alert alert-success" id="message" hidden></div>
     <h1 class="h3 mb-3">Панель администратора</h1>
 
-    <!-- Фильтр: при выборе значения список заявок загружается заново -->
     <div class="row g-2 mb-3">
       <div class="col-md-4">
         <select class="form-select" id="status" aria-label="Статус" onchange="loadBookings()">
@@ -42,7 +41,6 @@
 
     <p class="text-secondary" id="count"></p>
 
-    <!-- Сюда скрипт добавляет карточки заявок -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="list"></div>
   </main>
 
@@ -55,7 +53,6 @@
     const statusSelect = document.getElementById('status');
     const roomSelect = document.getElementById('room');
 
-    // Загружает помещения в выпадающий список фильтра
     async function loadRooms() {
       const rooms = await api('GET', '/api/rooms');
       rooms.forEach((room) => {
@@ -63,7 +60,6 @@
       });
     }
 
-    // Загружает заявки с учётом фильтра и рисует карточки
     async function loadBookings() {
       const url = '/api/admin/bookings?status=' + encodeURIComponent(statusSelect.value) + '&room=' + roomSelect.value;
       const bookings = await api('GET', url);
@@ -72,7 +68,6 @@
       document.getElementById('list').innerHTML = bookings.map(makeCard).join('');
     }
 
-    // Возвращает HTML одной карточки заявки
     function makeCard(booking) {
       return `
         <div class="col">
@@ -95,7 +90,6 @@
         </div>`;
     }
 
-    // Отзыв пользователя, если он есть
     function makeReview(booking) {
       if (!booking.review_rating) return '';
       return `
@@ -105,7 +99,6 @@
         </div>`;
     }
 
-    // Кнопки смены статуса. У завершённой заявки их нет
     function makeButtons(booking) {
       if (booking.status === 'Завершено') return '';
 
@@ -117,7 +110,6 @@
       return `<div class="card-footer bg-white d-flex flex-wrap gap-2">${buttons}</div>`;
     }
 
-    // Меняет статус заявки и обновляет список
     async function setStatus(bookingId, status) {
       const result = await api('POST', '/api/admin/bookings/' + bookingId + '/status', { status: status });
 

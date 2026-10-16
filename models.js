@@ -1,9 +1,6 @@
-// Подключение к базе данных и классы для работы с таблицами
-
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
-// Настройки подключения. Впишите сюда свой пароль от PostgreSQL
 const db = new Pool({
   host: 'localhost',
   port: 5432,
@@ -12,14 +9,12 @@ const db = new Pool({
   database: 'konferencii_rf',
 });
 
-// ---------- Пользователи ----------
 class User {
   static async findByLogin(login) {
     const result = await db.query('SELECT * FROM users WHERE login = $1', [login]);
     return result.rows[0];
   }
 
-  // В базу записывается не сам пароль, а его хеш
   static async create(data) {
     const hash = await bcrypt.hash(data.password, 10);
     await db.query(
@@ -33,7 +28,6 @@ class User {
   }
 }
 
-// ---------- Помещения ----------
 class Room {
   static async all() {
     const result = await db.query('SELECT * FROM rooms ORDER BY id');
@@ -41,10 +35,6 @@ class Room {
   }
 }
 
-// ---------- Заявки ----------
-
-// Заявка вместе с помещением, автором и отзывом (если он есть).
-// Дата сразу превращается в текст вида «20.10.2026 14:00»
 const SELECT_BOOKING = `
   SELECT b.id, b.user_id, b.payment, b.status,
          to_char(b.start_at, 'DD.MM.YYYY HH24:MI') AS start_at,
@@ -72,13 +62,11 @@ class Booking {
     return result.rows[0];
   }
 
-  // Заявки одного пользователя
   static async findByUser(userId) {
     const result = await db.query(SELECT_BOOKING + ' WHERE b.user_id = $1 ORDER BY b.id DESC', [userId]);
     return result.rows;
   }
 
-  // Все заявки для администратора. Если фильтр пустой, условие не действует
   static async findAll(status, roomId) {
     const result = await db.query(
       SELECT_BOOKING + ` WHERE ($1 = '' OR b.status = $1) AND ($2 = 0 OR b.room_id = $2) ORDER BY b.id DESC`,
@@ -92,7 +80,6 @@ class Booking {
   }
 }
 
-// ---------- Отзывы ----------
 class Review {
   static async create(bookingId, rating, text) {
     await db.query('INSERT INTO reviews (booking_id, rating, text) VALUES ($1, $2, $3)', [bookingId, rating, text]);

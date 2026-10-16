@@ -71,16 +71,15 @@
     const form = document.getElementById('form');
 
     form.addEventListener('submit', async (event) => {
-      event.preventDefault(); // отправляем данные сами, без перезагрузки страницы
+      event.preventDefault();
 
-      // Собираем значения всех полей формы в один объект
       const data = Object.fromEntries(new FormData(form));
       const result = await api('POST', '/api/register', data);
 
       if (result.ok) {
-        location.href = '/login.html?registered'; // пользователь создан — переходим на вход
+        location.href = '/login.html?registered';
       } else {
-        showErrors(form, result.errors); // сервер нашёл ошибки — показываем их под полями
+        showErrors(form, result.errors);
       }
     });
   </script>

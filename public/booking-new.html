@@ -28,7 +28,6 @@
         <form class="card card-body shadow-sm form-box" id="form" novalidate>
           <div class="mb-3">
             <label class="form-label" for="roomId">Помещение</label>
-            <!-- Список помещений загружается с сервера -->
             <select class="form-select" id="roomId" name="roomId">
               <option value="">Выберите помещение</option>
             </select>
@@ -55,7 +54,6 @@
         </form>
       </div>
 
-      <!-- Картинка и описание выбранного помещения -->
       <div class="col-md-6">
         <div class="card shadow-sm" id="preview" hidden>
           <img class="card-img-top p-3" id="room-image" alt="Схема зала">
@@ -78,7 +76,6 @@
     const preview = document.getElementById('preview');
     let rooms = [];
 
-    // Загружает помещения и добавляет их в выпадающий список
     async function loadRooms() {
       rooms = await api('GET', '/api/rooms');
       rooms.forEach((room) => {
@@ -86,7 +83,6 @@
       });
     }
 
-    // При выборе помещения показывает его картинку и описание
     roomSelect.addEventListener('change', () => {
       const room = rooms.find((item) => item.id === Number(roomSelect.value));
 
@@ -104,7 +100,7 @@
       const result = await api('POST', '/api/bookings', data);
 
       if (result.ok) {
-        location.href = '/bookings.html'; // заявка создана — переходим к списку заявок
+        location.href = '/bookings.html';
       } else {
         showErrors(form, result.errors);
       }

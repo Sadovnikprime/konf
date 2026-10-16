@@ -25,7 +25,6 @@
     <h1 class="h3 mb-3">Мои заявки</h1>
     <a class="btn btn-primary mb-3" href="/booking-new.html"><i class="bi bi-plus-lg"></i> Новая заявка</a>
 
-    <!-- Сюда скрипт добавляет карточки заявок -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="list"></div>
   </main>
 
@@ -37,7 +36,6 @@
   <script>
     const list = document.getElementById('list');
 
-    // Загружает заявки с сервера и рисует карточки
     async function loadBookings() {
       const bookings = await api('GET', '/api/bookings');
 
@@ -48,7 +46,6 @@
       }
     }
 
-    // Возвращает HTML одной карточки заявки
     function makeCard(booking) {
       return `
         <div class="col">
@@ -67,16 +64,13 @@
         </div>`;
     }
 
-    // Нижняя часть карточки: готовый отзыв, форма отзыва или подсказка
     function makeReview(booking) {
-      // Отзыв уже оставлен
       if (booking.review_rating) {
         return `
           <p class="mb-1"><b>Ваш отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(booking.review_rating)}</span></p>
           <p class="mb-0">${safe(booking.review_text)}</p>`;
       }
 
-      // Отзыв доступен только после завершения мероприятия
       if (booking.status !== 'Завершено') {
         return '<small class="text-secondary">Отзыв можно оставить после завершения мероприятия.</small>';
       }
@@ -107,7 +101,6 @@
         </details>`;
     }
 
-    // Отправляет отзыв на сервер
     async function sendReview(event, bookingId) {
       event.preventDefault();
       const form = event.target;
@@ -117,7 +110,7 @@
 
       if (result.ok) {
         showMessage('Спасибо за отзыв!');
-        loadBookings(); // обновляем список, чтобы отзыв появился в карточке
+        loadBookings();
       } else {
         showErrors(form, result.errors);
       }

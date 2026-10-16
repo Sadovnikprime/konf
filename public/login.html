@@ -52,7 +52,6 @@
     const form = document.getElementById('form');
     const formError = document.getElementById('form-error');
 
-    // После регистрации сюда приходят по адресу /login.html?registered
     if (location.search === '?registered') {
       showMessage('Вы зарегистрированы. Теперь войдите в систему');
     }
@@ -69,7 +68,6 @@
         location.href = '/bookings.html';
       } else {
         showErrors(form, result.errors);
-        // Общая ошибка формы: «Неверный логин или пароль»
         formError.textContent = result.errors.common || '';
         formError.hidden = !result.errors.common;
       }
