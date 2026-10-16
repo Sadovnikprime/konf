@@ -11,10 +11,10 @@
 <body class="bg-light">
   <header class="bg-primary">
     <div class="container d-flex flex-wrap justify-content-between align-items-center py-2">
-      <a class="navbar-brand text-white fw-bold fs-4" href="/bookings.html"><i class="bi bi-easel"></i> Конференции.РФ</a>
+      <a class="navbar-brand text-white fw-bold fs-4" href="/requests.html"><i class="bi bi-easel"></i> Конференции.РФ</a>
       <nav class="nav">
-        <a class="nav-link text-white" href="/bookings.html">Мои заявки</a>
-        <a class="nav-link text-white" href="/booking-new.html">Новая заявка</a>
+        <a class="nav-link text-white" href="/requests.html">Мои заявки</a>
+        <a class="nav-link text-white" href="/new-request.html">Новая заявка</a>
         <a class="nav-link text-white" href="/logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
       </nav>
     </div>
@@ -23,7 +23,7 @@
   <main class="container py-4">
     <div class="alert alert-success" id="message" hidden></div>
     <h1 class="h3 mb-3">Мои заявки</h1>
-    <a class="btn btn-primary mb-3" href="/booking-new.html"><i class="bi bi-plus-lg"></i> Новая заявка</a>
+    <a class="btn btn-primary mb-3" href="/new-request.html"><i class="bi bi-plus-lg"></i> Новая заявка</a>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3" id="list"></div>
   </main>
@@ -36,52 +36,52 @@
   <script>
     const list = document.getElementById('list');
 
-    async function loadBookings() {
-      const bookings = await api('GET', '/api/bookings');
+    async function loadRequests() {
+      const requests = await api('GET', '/api/requests');
 
-      if (bookings.length === 0) {
+      if (requests.length === 0) {
         list.innerHTML = '<p class="text-secondary">У вас пока нет заявок.</p>';
       } else {
-        list.innerHTML = bookings.map(makeCard).join('');
+        list.innerHTML = requests.map(makeCard).join('');
       }
     }
 
-    function makeCard(booking) {
+    function makeCard(request) {
       return `
         <div class="col">
           <div class="card h-100 card-hover">
             <div class="card-body">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <img class="border rounded flex-shrink-0" width="72" src="/img/${booking.room_image}" alt="">
-                <h2 class="h5 mb-0">${booking.room_name}</h2>
+                <img class="border rounded flex-shrink-0" width="72" src="/img/${request.room_image}" alt="">
+                <h2 class="h5 mb-0">${request.room_name}</h2>
               </div>
-              <span class="badge rounded-pill ${statusColor(booking.status)}">${booking.status}</span>
-              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${booking.start_at}</p>
-              <p class="mb-0"><i class="bi bi-credit-card text-primary"></i> ${booking.payment}</p>
+              <span class="badge rounded-pill ${statusColor(request.status)}">${request.status}</span>
+              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${request.start_at}</p>
+              <p class="mb-0"><i class="bi bi-credit-card text-primary"></i> ${request.payment}</p>
             </div>
-            <div class="card-footer bg-white">${makeReview(booking)}</div>
+            <div class="card-footer bg-white">${makeReview(request)}</div>
           </div>
         </div>`;
     }
 
-    function makeReview(booking) {
-      if (booking.review_rating) {
+    function makeReview(request) {
+      if (request.review_rating) {
         return `
-          <p class="mb-1"><b>Ваш отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(booking.review_rating)}</span></p>
-          <p class="mb-0">${safe(booking.review_text)}</p>`;
+          <p class="mb-1"><b>Ваш отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(request.review_rating)}</span></p>
+          <p class="mb-0">${safe(request.review_text)}</p>`;
       }
 
-      if (booking.status !== 'Завершено') {
+      if (request.status !== 'Завершено') {
         return '<small class="text-secondary">Отзыв можно оставить после завершения мероприятия.</small>';
       }
 
       return `
         <details>
           <summary class="text-primary fw-semibold">Оставить отзыв</summary>
-          <form class="mt-2" novalidate onsubmit="sendReview(event, ${booking.id})">
+          <form class="mt-2" novalidate onsubmit="sendReview(event, ${request.id})">
             <div class="mb-2">
-              <label class="form-label" for="rating${booking.id}">Оценка</label>
-              <select class="form-select" id="rating${booking.id}" name="rating">
+              <label class="form-label" for="rating${request.id}">Оценка</label>
+              <select class="form-select" id="rating${request.id}" name="rating">
                 <option value="">Выберите оценку</option>
                 <option value="5">5 — отлично</option>
                 <option value="4">4 — хорошо</option>
@@ -92,8 +92,8 @@
               <div class="invalid-feedback"></div>
             </div>
             <div class="mb-2">
-              <label class="form-label" for="text${booking.id}">Отзыв</label>
-              <textarea class="form-control" id="text${booking.id}" name="text" rows="3"></textarea>
+              <label class="form-label" for="text${request.id}">Отзыв</label>
+              <textarea class="form-control" id="text${request.id}" name="text" rows="3"></textarea>
               <div class="invalid-feedback"></div>
             </div>
             <button class="btn btn-primary" type="submit">Отправить отзыв</button>
@@ -101,22 +101,22 @@
         </details>`;
     }
 
-    async function sendReview(event, bookingId) {
+    async function sendReview(event, requestId) {
       event.preventDefault();
       const form = event.target;
 
       const data = Object.fromEntries(new FormData(form));
-      const result = await api('POST', '/api/bookings/' + bookingId + '/review', data);
+      const result = await api('POST', '/api/requests/' + requestId + '/review', data);
 
       if (result.ok) {
         showMessage('Спасибо за отзыв!');
-        loadBookings();
+        loadRequests();
       } else {
         showErrors(form, result.errors);
       }
     }
 
-    loadBookings();
+    loadRequests();
   </script>
 </body>
 </html>

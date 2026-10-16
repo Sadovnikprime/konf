@@ -65,7 +65,7 @@
       if (result.role === 'admin') {
         location.href = '/admin.html';
       } else if (result.role === 'user') {
-        location.href = '/bookings.html';
+        location.href = '/requests.html';
       } else {
         showErrors(form, result.errors);
         formError.textContent = result.errors.common || '';

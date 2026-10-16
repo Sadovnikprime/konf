@@ -1,7 +1,4 @@
-DROP TABLE IF EXISTS reviews;
-DROP TABLE IF EXISTS bookings;
-DROP TABLE IF EXISTS rooms;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS reviews, requests, rooms, users CASCADE;
 
 CREATE TABLE users (
     id        SERIAL       PRIMARY KEY,
@@ -21,7 +18,7 @@ CREATE TABLE rooms (
     image       VARCHAR(50)  NOT NULL
 );
 
-CREATE TABLE bookings (
+CREATE TABLE requests (
     id       SERIAL      PRIMARY KEY,
     user_id  INTEGER     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     room_id  INTEGER     NOT NULL REFERENCES rooms (id),
@@ -32,13 +29,13 @@ CREATE TABLE bookings (
 
 CREATE TABLE reviews (
     id         SERIAL   PRIMARY KEY,
-    booking_id INTEGER  NOT NULL UNIQUE REFERENCES bookings (id) ON DELETE CASCADE,
+    request_id INTEGER  NOT NULL UNIQUE REFERENCES requests (id) ON DELETE CASCADE,
     rating     SMALLINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     text       TEXT     NOT NULL
 );
 
-CREATE INDEX bookings_user_idx ON bookings (user_id);
-CREATE INDEX bookings_status_idx ON bookings (status);
+CREATE INDEX requests_user_idx ON requests (user_id);
+CREATE INDEX requests_status_idx ON requests (status);
 
 INSERT INTO rooms (name, capacity, description, image) VALUES
     ('Аудитория', 120, 'Ряды амфитеатром, кафедра и проектор. Для докладов и пленарных заседаний.', 'auditorium.svg'),

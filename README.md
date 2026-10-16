@@ -17,7 +17,7 @@
 ## Файлы
 
 - `server.js` — сервер и проверка данных
-- `models.js` — классы `User`, `Room`, `Booking`, `Review` для работы с базой
+- `models.js` — классы `User`, `Room`, `Request`, `Review` для работы с базой
 - `db/schema.sql` — таблицы и начальные данные
 - `db/er-diagram.png` — ER-диаграмма
 - `public/*.html` — страницы сайта

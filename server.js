@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-const { User, Room, Booking, Review } = require('./models');
+const { User, Room, Request, Review } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -64,11 +64,11 @@ app.get('/api/rooms', async (req, res) => {
   res.json(await Room.all());
 });
 
-app.get('/api/bookings', onlyUser, async (req, res) => {
-  res.json(await Booking.findByUser(req.session.user.id));
+app.get('/api/requests', onlyUser, async (req, res) => {
+  res.json(await Request.findByUser(req.session.user.id));
 });
 
-app.post('/api/bookings', onlyUser, async (req, res) => {
+app.post('/api/requests', onlyUser, async (req, res) => {
   const { startAt = '', payment = '' } = req.body;
   const roomId = Number(req.body.roomId);
   const rooms = await Room.all();
@@ -77,20 +77,20 @@ app.post('/api/bookings', onlyUser, async (req, res) => {
   if (!rooms.some((room) => room.id === roomId)) errors.roomId = 'Выберите помещение';
   if (!startAt || isNaN(new Date(startAt))) errors.startAt = 'Укажите дату и время начала';
   else if (new Date(startAt) <= new Date()) errors.startAt = 'Дата начала должна быть в будущем';
-  if (!Booking.PAYMENTS.includes(payment)) errors.payment = 'Выберите способ оплаты';
+  if (!Request.PAYMENTS.includes(payment)) errors.payment = 'Выберите способ оплаты';
   if (Object.keys(errors).length > 0) return res.status(400).json({ errors });
 
-  await Booking.create({ userId: req.session.user.id, roomId, startAt: new Date(startAt), payment });
+  await Request.create({ userId: req.session.user.id, roomId, startAt: new Date(startAt), payment });
   res.json({ ok: true });
 });
 
-app.post('/api/bookings/:id/review', onlyUser, async (req, res) => {
+app.post('/api/requests/:id/review', onlyUser, async (req, res) => {
   const { text = '' } = req.body;
   const rating = Number(req.body.rating);
-  const booking = await Booking.findById(Number(req.params.id));
+  const request = await Request.findById(Number(req.params.id));
 
   const errors = {};
-  if (!booking || booking.user_id !== req.session.user.id || booking.status !== 'Завершено' || booking.review_rating) {
+  if (!request || request.user_id !== req.session.user.id || request.status !== 'Завершено' || request.review_rating) {
     errors.text = 'Отзыв можно оставить только после завершения мероприятия';
   } else {
     if (!(rating >= 1 && rating <= 5)) errors.rating = 'Поставьте оценку';
@@ -98,25 +98,25 @@ app.post('/api/bookings/:id/review', onlyUser, async (req, res) => {
   }
   if (Object.keys(errors).length > 0) return res.status(400).json({ errors });
 
-  await Review.create(booking.id, rating, text.trim());
+  await Review.create(request.id, rating, text.trim());
   res.json({ ok: true });
 });
 
-app.get('/api/admin/bookings', onlyAdmin, async (req, res) => {
-  const status = Booking.STATUSES.includes(req.query.status) ? req.query.status : '';
+app.get('/api/admin/requests', onlyAdmin, async (req, res) => {
+  const status = Request.STATUSES.includes(req.query.status) ? req.query.status : '';
   const roomId = Number(req.query.room) || 0;
-  res.json(await Booking.findAll(status, roomId));
+  res.json(await Request.findAll(status, roomId));
 });
 
-app.post('/api/admin/bookings/:id/status', onlyAdmin, async (req, res) => {
-  const booking = await Booking.findById(Number(req.params.id));
+app.post('/api/admin/requests/:id/status', onlyAdmin, async (req, res) => {
+  const request = await Request.findById(Number(req.params.id));
   const { status } = req.body;
 
-  if (!booking || booking.status === 'Завершено' || !['Мероприятие назначено', 'Завершено'].includes(status)) {
+  if (!request || request.status === 'Завершено' || !['Мероприятие назначено', 'Завершено'].includes(status)) {
     return res.status(400).json({ error: 'Статус этой заявки нельзя изменить' });
   }
 
-  await Booking.setStatus(booking.id, status);
+  await Request.setStatus(request.id, status);
   res.json({ ok: true });
 });
 

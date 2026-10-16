@@ -25,7 +25,7 @@
 
     <div class="row g-2 mb-3">
       <div class="col-md-4">
-        <select class="form-select" id="status" aria-label="Статус" onchange="loadBookings()">
+        <select class="form-select" id="status" aria-label="Статус" onchange="loadRequests()">
           <option value="">Все статусы</option>
           <option>Новая</option>
           <option>Мероприятие назначено</option>
@@ -33,7 +33,7 @@
         </select>
       </div>
       <div class="col-md-4">
-        <select class="form-select" id="room" aria-label="Помещение" onchange="loadBookings()">
+        <select class="form-select" id="room" aria-label="Помещение" onchange="loadRequests()">
           <option value="">Все помещения</option>
         </select>
       </div>
@@ -60,69 +60,69 @@
       });
     }
 
-    async function loadBookings() {
-      const url = '/api/admin/bookings?status=' + encodeURIComponent(statusSelect.value) + '&room=' + roomSelect.value;
-      const bookings = await api('GET', url);
+    async function loadRequests() {
+      const url = '/api/admin/requests?status=' + encodeURIComponent(statusSelect.value) + '&room=' + roomSelect.value;
+      const requests = await api('GET', url);
 
-      document.getElementById('count').textContent = 'Найдено заявок: ' + bookings.length;
-      document.getElementById('list').innerHTML = bookings.map(makeCard).join('');
+      document.getElementById('count').textContent = 'Найдено заявок: ' + requests.length;
+      document.getElementById('list').innerHTML = requests.map(makeCard).join('');
     }
 
-    function makeCard(booking) {
+    function makeCard(request) {
       return `
         <div class="col">
           <div class="card h-100 card-hover">
             <div class="card-body">
               <div class="d-flex align-items-center gap-3 mb-2">
-                <img class="border rounded flex-shrink-0" width="72" src="/img/${booking.room_image}" alt="">
-                <h2 class="h5 mb-0">№ ${booking.id}. ${booking.room_name}</h2>
+                <img class="border rounded flex-shrink-0" width="72" src="/img/${request.room_image}" alt="">
+                <h2 class="h5 mb-0">№ ${request.id}. ${request.room_name}</h2>
               </div>
-              <span class="badge rounded-pill ${statusColor(booking.status)}">${booking.status}</span>
-              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${booking.start_at}</p>
-              <p class="mb-1"><i class="bi bi-credit-card text-primary"></i> ${booking.payment}</p>
-              <p class="mb-1"><i class="bi bi-person text-primary"></i> ${safe(booking.user_name)}</p>
-              <p class="mb-1"><i class="bi bi-telephone text-primary"></i> ${safe(booking.user_phone)}</p>
-              <p class="mb-0"><i class="bi bi-envelope text-primary"></i> ${safe(booking.user_email)}</p>
-              ${makeReview(booking)}
+              <span class="badge rounded-pill ${statusColor(request.status)}">${request.status}</span>
+              <p class="mt-2 mb-1"><i class="bi bi-calendar-event text-primary"></i> ${request.start_at}</p>
+              <p class="mb-1"><i class="bi bi-credit-card text-primary"></i> ${request.payment}</p>
+              <p class="mb-1"><i class="bi bi-person text-primary"></i> ${safe(request.user_name)}</p>
+              <p class="mb-1"><i class="bi bi-telephone text-primary"></i> ${safe(request.user_phone)}</p>
+              <p class="mb-0"><i class="bi bi-envelope text-primary"></i> ${safe(request.user_email)}</p>
+              ${makeReview(request)}
             </div>
-            ${makeButtons(booking)}
+            ${makeButtons(request)}
           </div>
         </div>`;
     }
 
-    function makeReview(booking) {
-      if (!booking.review_rating) return '';
+    function makeReview(request) {
+      if (!request.review_rating) return '';
       return `
         <div class="bg-light rounded p-2 mt-2">
-          <p class="mb-1"><b>Отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(booking.review_rating)}</span></p>
-          <p class="mb-0">${safe(booking.review_text)}</p>
+          <p class="mb-1"><b>Отзыв:</b> <span class="text-warning">${'<i class="bi bi-star-fill"></i>'.repeat(request.review_rating)}</span></p>
+          <p class="mb-0">${safe(request.review_text)}</p>
         </div>`;
     }
 
-    function makeButtons(booking) {
-      if (booking.status === 'Завершено') return '';
+    function makeButtons(request) {
+      if (request.status === 'Завершено') return '';
 
       let buttons = '';
-      if (booking.status === 'Новая') {
-        buttons += `<button class="btn btn-primary" onclick="setStatus(${booking.id}, 'Мероприятие назначено')">Назначить мероприятие</button>`;
+      if (request.status === 'Новая') {
+        buttons += `<button class="btn btn-primary" onclick="setStatus(${request.id}, 'Мероприятие назначено')">Назначить мероприятие</button>`;
       }
-      buttons += `<button class="btn btn-success" onclick="setStatus(${booking.id}, 'Завершено')">Завершить</button>`;
+      buttons += `<button class="btn btn-success" onclick="setStatus(${request.id}, 'Завершено')">Завершить</button>`;
       return `<div class="card-footer bg-white d-flex flex-wrap gap-2">${buttons}</div>`;
     }
 
-    async function setStatus(bookingId, status) {
-      const result = await api('POST', '/api/admin/bookings/' + bookingId + '/status', { status: status });
+    async function setStatus(requestId, status) {
+      const result = await api('POST', '/api/admin/requests/' + requestId + '/status', { status: status });
 
       if (result.ok) {
-        showMessage('Заявка № ' + bookingId + ': статус изменён на «' + status + '»');
+        showMessage('Заявка № ' + requestId + ': статус изменён на «' + status + '»');
       } else {
         showMessage(result.error);
       }
-      loadBookings();
+      loadRequests();
     }
 
     loadRooms();
-    loadBookings();
+    loadRequests();
   </script>
 </body>
 </html>
