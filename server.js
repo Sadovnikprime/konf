@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static('public'));
 app.use(express.json());
-app.use(session({ secret: 'konferencii-rf', resave: false, saveUninitialized: false }));
+app.use(session({ secret: 'konfer', resave: false, saveUninitialized: false }));
 
 app.get('/', (req, res) => res.redirect('/login.html'));
 

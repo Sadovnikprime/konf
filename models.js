@@ -6,7 +6,7 @@ const db = new Pool({
   port: 5432,
   user: 'postgres',
   password: 'postgres',
-  database: 'konferencii_rf',
+  database: 'konfa',
 });
 
 class User {
